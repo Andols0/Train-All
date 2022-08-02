@@ -1,0 +1,7 @@
+## Interface: 90207
+## Title: TrainAll
+## Version: 9.2.7
+## Notes: Adds a Train All button to the Profession trainer UI
+## Author: Andols
+
+TrainAll.lua
