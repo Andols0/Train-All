@@ -1,4 +1,4 @@
 ignore:
  - README.md
 
- enable-toc-creation: yes
+enable-toc-creation: yes
