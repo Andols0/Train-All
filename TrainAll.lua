@@ -1,9 +1,22 @@
--- Game version 9.0.2
 local event= CreateFrame("frame")
 event:RegisterEvent("ADDON_LOADED")
 local spot=0
 local Cost, Bt_TrainAll
 local done=false
+
+
+local Classic = (WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC ) or (WOW_PROJECT_ID  == WOW_PROJECT_BURNING_CRUSADE_CLASSIC  )
+
+local function GetServiceInfo(index)
+	local status
+	if Classic then
+		_, _, status = GetTrainerServiceInfo(index)
+		return status
+	else
+		_, status =  GetTrainerServiceInfo(index)
+		return status
+	end
+end
 
 local function pauseit()
 	spot = 0
@@ -19,7 +32,7 @@ function Bt_TrainAll()
 	local found = false
 	while found == false do
 		spot = spot + 1
-		local _, status, _ = GetTrainerServiceInfo(spot)
+		local status = GetServiceInfo(spot)
 		if status == "available" then
 			BuyTrainerService(spot)
 			C_Timer.After(0.3, pauseit)
@@ -35,7 +48,12 @@ end
 local function createit()
 	local TrainAllButton = CreateFrame("Button", "TrainAllButton", ClassTrainerFrame, "MagicButtonTemplate")
 	TrainAllButton:SetText("Train All")
-	TrainAllButton:SetPoint("BOTTOMRIGHT", -96, 4)
+	if Classic then
+		TrainAllButton:SetPoint("LEFT",ClassTrainerTrainButton,"RIGHT")
+		ClassTrainerCancelButton:Hide()
+	else
+		TrainAllButton:SetPoint("RIGHT",ClassTrainerTrainButton,"LEFT")
+	end
 	TrainAllButton:SetScript("OnEnter", function()
 		GameTooltip:SetOwner(TrainAllButton, "ANCHOR_RIGHT")
 		GameTooltip:SetText("Train All available skills\nHold Shift to train all skills Instantly\nTotal cost is "..GetMoneyString(Cost))
@@ -43,7 +61,7 @@ local function createit()
 	TrainAllButton:SetScript("OnLeave", function()
 		GameTooltip:Hide()
 	end)
-	TrainAllButton:SetScript("ONClick", function()
+	TrainAllButton:SetScript("OnClick", function()
 		if IsShiftKeyDown() then
 			BuyTrainerService(0)
 		else
@@ -61,7 +79,7 @@ local function createit()
 		Cost = 0
 		local Enable = false
 		for i=1, GetNumTrainerServices() do
-			local _, status, _ = GetTrainerServiceInfo(i)
+			local status = GetServiceInfo(i)
 			if status == "available" then
 				Cost = Cost + GetTrainerServiceCost(i)
 				TrainAllButton:Enable()
