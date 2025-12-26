@@ -7,7 +7,8 @@ local done=false
 
 local Classic = WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC
 local BC =  WOW_PROJECT_ID  == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
-local Wrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC 
+local Wrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
+local Mists = WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC
 
 local function GetServiceInfo(index)
 	local status
@@ -50,7 +51,7 @@ end
 local function createit()
 	local TrainAllButton = CreateFrame("Button", "TrainAllButton", ClassTrainerFrame, "MagicButtonTemplate")
 	TrainAllButton:SetText("Train All")
-	if Classic or BC or Wrath then
+	if Classic or BC or Wrath or Mists then
 		TrainAllButton:SetPoint("LEFT",ClassTrainerTrainButton,"RIGHT")
 		ClassTrainerCancelButton:Hide()
 	else

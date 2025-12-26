@@ -1,6 +1,6 @@
-## Interface: @toc-version-midnight@, @toc-version-retail@, @toc-version-classic@, @toc-version-bcc@, @toc-version-wrath@
+## Interface: @toc-version-midnight@, @toc-version-retail@, @toc-version-classic@, @toc-version-bcc@, @toc-version-wrath@, @toc-version-mists@
 #@debug@
-## Interface: 110207, 120000
+## Interface: 110207, 120000, 50503
 #@end-debug@
 ## Title: TrainAll
 ## Version: 11.2.7
