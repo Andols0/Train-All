@@ -1,12 +1,11 @@
-local event= CreateFrame("frame")
+local event = CreateFrame("frame")
 event:RegisterEvent("ADDON_LOADED")
-local spot=0
+local spot = 0
 local Cost, Bt_TrainAll
-local done=false
+local done = false
 
-
-local Classic = WOW_PROJECT_ID  == WOW_PROJECT_CLASSIC
-local BC =  WOW_PROJECT_ID  == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+local Classic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local BC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 local Wrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 local Mists = WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC
 
@@ -16,7 +15,7 @@ local function GetServiceInfo(index)
 		_, _, status = GetTrainerServiceInfo(index)
 		return status
 	else
-		_, status =  GetTrainerServiceInfo(index)
+		_, status = GetTrainerServiceInfo(index)
 		return status
 	end
 end
@@ -52,14 +51,32 @@ local function createit()
 	local TrainAllButton = CreateFrame("Button", "TrainAllButton", ClassTrainerFrame, "MagicButtonTemplate")
 	TrainAllButton:SetText("Train All")
 	if Classic or BC or Wrath or Mists then
-		TrainAllButton:SetPoint("LEFT",ClassTrainerTrainButton,"RIGHT")
+		TrainAllButton:SetPoint("LEFT", ClassTrainerTrainButton, "RIGHT")
 		ClassTrainerCancelButton:Hide()
 	else
-		TrainAllButton:SetPoint("RIGHT",ClassTrainerTrainButton,"LEFT")
+		TrainAllButton:SetPoint("RIGHT", ClassTrainerTrainButton, "LEFT")
 	end
-	TrainAllButton:SetScript("OnEnter", function()
+
+	-- Keep the button inside the frame no matter how the Train button is placed.
+	-- Some skins (e.g. ElvUI) move the Train button to the frame's right edge,
+	-- which would push Train All off the edge. Whenever the frame is shown, if
+	-- Train All spills past the frame's right edge, flip it to the left side of
+	-- the Train button instead. This is skin-agnostic -- it reacts to the actual
+	-- layout rather than checking for any particular addon.
+	TrainAllButton:HookScript("OnShow", function()
+		local frameRight = ClassTrainerFrame:GetRight()
+		local buttonRight = TrainAllButton:GetRight()
+		if frameRight and buttonRight and buttonRight > frameRight then
+			TrainAllButton:ClearAllPoints()
+			TrainAllButton:SetPoint("RIGHT", ClassTrainerTrainButton, "LEFT")
+		end
+	end)
+	TrainAllButton:SetScript("OnEnter",	function()
 		GameTooltip:SetOwner(TrainAllButton, "ANCHOR_RIGHT")
-		GameTooltip:SetText("Train All available skills\nHold Shift to train all skills Instantly\nTotal cost is "..GetMoneyString(Cost))
+		GameTooltip:SetText(
+			"Train All available skills\nHold Shift to train all skills Instantly\nTotal cost is " ..
+				GetMoneyString(Cost)
+		)
 	end)
 	TrainAllButton:SetScript("OnLeave", function()
 		GameTooltip:Hide()
@@ -74,14 +91,14 @@ local function createit()
 		end
 	end)
 	if C_AddOns.IsAddOnLoaded("ElvUI") then
-		local E, _, _, _, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
-		local S = E:GetModule('Skins')
+		local E, _, _, _, _ = unpack(ElvUI) --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+		local S = E:GetModule("Skins")
 		S:HandleButton(TrainAllButton, 1)
 	end
 	hooksecurefunc("ClassTrainerFrame_Update", function()
 		Cost = 0
 		local Enable = false
-		for i=1, GetNumTrainerServices() do
+		for i = 1, GetNumTrainerServices() do
 			local status = GetServiceInfo(i)
 			if status == "available" then
 				Cost = Cost + GetTrainerServiceCost(i)
@@ -95,7 +112,7 @@ local function createit()
 	end)
 end
 
-local function eventHandler(_,_,name)
+local function eventHandler(_, _, name)
 	if name == "TrainAll" then
 		if C_AddOns.IsAddOnLoaded("Blizzard_TrainerUI") then
 			createit()
