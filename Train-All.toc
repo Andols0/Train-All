@@ -1,9 +1,9 @@
 ## Interface: @toc-version-midnight@, @toc-version-retail@, @toc-version-classic@, @toc-version-bcc@, @toc-version-wrath@, @toc-version-mists@
 #@debug@
-## Interface: 110207, 120000, 50503
+## Interface: 120100, 120000, 50503
 #@end-debug@
 ## Title: TrainAll
-## Version: 11.2.7
+## Version: 12.1.0
 ## Notes: Adds a Train All button to the Profession trainer UI
 ## Author: Andols
 
